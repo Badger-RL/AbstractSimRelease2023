@@ -1,5 +1,5 @@
 # BadgerBots AbstractSim 2023 Code Release
-This repository contains the code use to train the policies used in Robocup 2023 by team BadgerBots.
+This repository contains the code used to train the policies used in Robocup 2023 by team BadgerBots.
 
 It contains code for training both the attacker and goalie policies, and each folder has its own readme for how to use the training and evaluation code. 
 
