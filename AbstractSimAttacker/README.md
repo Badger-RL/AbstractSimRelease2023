@@ -5,11 +5,11 @@ We are still getting the training code ready to be easy to run locally.
 
 ## Training Policies
 Policies can be trained with the 'Attacker/run.py' file.
-Example: 'python run.py --env=attacker --policy=attacker/attacker --train'
+Example: `python run.py --env=attacker --policy=attacker/attacker --train`
 
 ## Visualizing Policies
 Policies can be visualized with the 'Attacker/run.py' file
-Example: 'python run.py --env=attacker --policy=attacker/attacker --render'
+Example: `python run.py --env=attacker --policy=attacker/attacker --render`
 
 ## Pretrained Policies
 
