@@ -3,3 +3,5 @@ AbstractSimGoalie/env
 AbstractSimGoalie/__pycache__
 AbstractSimAttacker/__pycache__
 AbstractSimAttacker/.DS_Store
+AbstractSimAttacker/.*
+AbstractSimGoalie/.*

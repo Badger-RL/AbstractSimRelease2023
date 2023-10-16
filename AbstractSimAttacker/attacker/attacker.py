@@ -172,15 +172,19 @@ class parallel_env(BaseEnv):
             ball_x = np.random.uniform(-field_length, field_length)
             ball_y = np.random.uniform(-field_height, -field_height + spawn_range)
 
+
         self.ball = [ball_x, ball_y]
 
         # Goal is 4400, [-1000 to 1000]
         # self.ball = [100, 2900]
 
         observations = {}
+        infos = {agent: {} for agent in self.agents}
         for agent in self.agents:
             observations[agent] = self.get_obs(agent)
-        return observations
+        
+
+        return observations, infos
 
     def step(self, actions):
         """

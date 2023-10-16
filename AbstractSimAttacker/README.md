@@ -3,14 +3,6 @@
 This repository contains the code used to train the attacker policy used by BadgerBots in Robocup 2023. 
 We are still getting the training code ready to be easy to run locally.
 
-## Training Policies
-Policies can be trained with the 'Attacker/run.py' file.
-Example: `python run.py --env=attacker --policy=attacker/attacker --train`
-
-## Visualizing Policies
-Policies can be visualized with the 'Attacker/run.py' file
-Example: `python run.py --env=attacker --policy=attacker/attacker --render`
-
 ## Pretrained Policies
 
 Pre-trained Policies are available in the `attacker/exported_policy` directory. They need some manual changes to work with BadgerRLSystemCodeRelease2023; we will fix this soon.

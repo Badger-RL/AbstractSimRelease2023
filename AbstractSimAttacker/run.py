@@ -9,8 +9,8 @@ import supersuit as ss
 import argparse
 import importlib
 
-from wandb.integration.sb3 import WandbCallback
-import wandb
+# from wandb.integration.sb3 import WandbCallback
+# import wandb
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -48,57 +48,35 @@ def parse_args():
     return parser.parse_args()
 
 def train(args):
-    if args.condor_name:
-        from env import env
-        args.env = args.condor_name
-    else:
-        path = args.env + '.' + args.env
-        env = importlib.import_module(path).env
-
-    run_name = args.env + '_' + time.strftime("%d_%H:%M")
-
-    if args.wandb:
-        run = wandb.init(
-            project=args.env,
-            config={
-                "env": args.env,
-                "total_timesteps": args.total_timesteps,
-                "batch_size": args.batch_size,
-            },
-            sync_tensorboard=True,
-            name=run_name,
-        )
+    path = args.env + '.' + args.env
+    env = importlib.import_module(path).env
 
     env = env(env_type='parallel', continuous_actions=args.continuous_actions)
+    env = ss.flatten_v0(env)
     env = ss.pettingzoo_env_to_vec_env_v1(env)
 
-    env = ss.concat_vec_envs_v1(env, args.vec_envs, base_class='stable_baselines3')
+    env = ss.concat_vec_envs_v1(env, num_vec_envs=8, num_cpus=4, base_class='stable_baselines3')
     env = VecMonitor(env)
 
     env = VecNormalize(env, norm_obs=False, norm_reward=True, clip_obs=10)
 
     model = PPO(MlpPolicy, env, batch_size=args.batch_size, 
                 ent_coef=0.01,
-                tensorboard_log=f"runs/{run_name}",
                 verbose=1)
     
-    if args.wandb:
-        model.learn(total_timesteps=args.total_timesteps, callback=WandbCallback(verbose=2))
-    else:
-        model.learn(total_timesteps=args.total_timesteps)
+    model.learn(total_timesteps=args.total_timesteps)
 
 
-    model.save("ppo_sb3_" + args.env)
+    model.save(args.env)
 
-    if args.wandb:
-        run.finish()
+    print('Done training, If process not finished can exit with Ctrl+C now.')
 
 def render(args):
     # Load model
     if args.policy_name:
         model = PPO.load(args.policy_name)
     else:
-        model = PPO.load("ppo_sb3_" + args.env)
+        model = PPO.load(args.env)
 
     path = args.env + '.' + args.env
     env = importlib.import_module(path).env
@@ -108,7 +86,7 @@ def render(args):
     env = ss.pettingzoo_env_to_vec_env_v1(env)
 
     # Run model
-    obs = env.reset()
+    obs, _ = env.reset()
     while True:
         action, _ = model.predict(obs, deterministic=True)
         obs, _, _, _, _ = env.step(action)
